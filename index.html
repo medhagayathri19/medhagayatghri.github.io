@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Alumni Login</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500&family=Outfit:wght@600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<div class="flex-center">
+    <div class="glass-container text-center">
+        <h2 class="mb-4">Alumni Login</h2>
+        <p class="label mb-4">Please sign in to continue</p>
+        
+        <input id="regno" placeholder="Registration Number">
+        <input id="password" type="password" placeholder="Password">
+        
+        <button class="btn mb-4" onclick="login()">Login</button>
+        
+        <p id="msg" class="error-msg"></p>
+        
+        <a href="reset.html" style="color: var(--primary); text-decoration: none; font-size: 0.9rem;">Forgot Password?</a>
+    </div>
+</div>
+
+<script>
+
+function login(){
+
+const reg=document.getElementById("regno").value;
+const pass=document.getElementById("password").value;
+
+fetch("http://localhost:5000/api/auth/login",{
+
+method:"POST",
+
+headers:{
+"Content-Type":"application/json"
+},
+
+body:JSON.stringify({
+reg_no:reg,
+password:pass
+})
+
+})
+
+.then(res=>res.json())
+
+.then(data=>{
+
+if(data.success){
+
+localStorage.setItem("reg_no",reg);
+
+window.location="dashboard.html";
+
+}
+
+else{
+
+document.getElementById("msg").innerText=data.message;
+
+}
+
+});
+
+}
+
+</script>
+
+</body>
+</html>

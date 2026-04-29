@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard | Alumni System</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500&family=Outfit:wght@600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<div class="flex-center">
+    <div class="glass-container">
+        <h2 class="mb-4 text-center">Dashboard</h2>
+        
+        <div style="background: rgba(15,23,42,0.5); padding: 1rem; border-radius: 8px; margin-bottom: 2rem;">
+            <p style="margin-bottom: 0.5rem;"><span class="label">Name:</span> <strong id="name"></strong></p>
+            <p style="margin-bottom: 0.5rem;"><span class="label">Company:</span> <strong id="company"></strong></p>
+            <p style="margin-bottom: 0.5rem;"><span class="label">Job Role:</span> <strong id="job"></strong></p>
+            <p><span class="label">Email:</span> <strong id="email"></strong></p>
+        </div>
+
+        <h3 class="mb-4 text-center">Update Job</h3>
+        
+        <input id="companyInput" placeholder="Company">
+        
+        <input id="jobInput" placeholder="Job Role">
+        
+        <button class="btn mb-4" onclick="update()">Update</button>
+        
+        <button class="btn" onclick="logout()" style="background: #ef4444;">Logout</button>
+    </div>
+</div>
+
+<script>
+
+const reg=localStorage.getItem("reg_no");
+
+fetch("http://localhost:5000/api/profile/"+reg)
+
+.then(res=>res.json())
+
+.then(data=>{
+
+document.getElementById("name").innerText=data.name;
+document.getElementById("company").innerText=data.company || "N/A";
+document.getElementById("job").innerText=data.job_role || "N/A";
+document.getElementById("email").innerText=data.email;
+
+});
+
+function update(){
+
+const company=document.getElementById("companyInput").value;
+
+const job=document.getElementById("jobInput").value;
+
+fetch("http://localhost:5000/api/profile/update",{
+
+method:"PUT",
+
+headers:{
+"Content-Type":"application/json"
+},
+
+body:JSON.stringify({
+reg_no:reg,
+company:company,
+job_role:job
+})
+
+})
+
+.then(res=>res.json())
+.then(()=>alert("Updated"));
+
+}
+
+function logout(){
+
+localStorage.removeItem("reg_no");
+
+window.location="index.html";
+
+}
+
+</script>
+
+</body>
+</html>

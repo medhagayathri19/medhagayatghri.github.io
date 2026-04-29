@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500&family=Outfit:wght@600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        .admin-container {
+            max-width: 900px;
+            margin: 2rem auto;
+            padding: 2rem;
+            width: 95%;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1.5rem;
+            background: rgba(15, 23, 42, 0.5);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        th, td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        th { background: rgba(255, 255, 255, 0.05); font-weight: 500; }
+        .search-row { display: flex; gap: 1rem; margin-top: 1.5rem; }
+        .search-row input { margin-bottom: 0; }
+        .search-row button { width: auto; padding: 0.85rem 2rem; }
+    </style>
+</head>
+<body>
+
+<div class="glass-container admin-container">
+    <div style="display: flex; justify-content: space-between; align-items: center;">
+        <h2>Admin Panel</h2>
+        <span class="label" style="margin: 0;">Total Alumni: <strong id="count" style="color: var(--text);"></strong></span>
+    </div>
+
+    <div class="search-row">
+        <input id="search" placeholder="Search company">
+        <button class="btn" onclick="search()">Search</button>
+    </div>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Reg No</th>
+                <th>Company</th>
+                <th>Job</th>
+                <th>Email</th>
+            </tr>
+        </thead>
+        <tbody id="table"></tbody>
+    </table>
+</div>
+
+<script>
+
+fetch("http://localhost:5000/api/users")
+
+.then(res=>res.json())
+
+.then(data=>{
+
+document.getElementById("count").innerText=data.length;
+
+display(data);
+
+});
+
+function display(data){
+
+const table=document.getElementById("table");
+
+table.innerHTML="";
+
+data.forEach(user=>{
+
+const row=document.createElement("tr");
+
+row.innerHTML=`
+<td>${user.name}</td>
+<td>${user.reg_no}</td>
+<td>${user.company||""}</td>
+<td>${user.job_role||""}</td>
+<td>${user.email}</td>
+`;
+
+table.appendChild(row);
+
+});
+
+}
+
+function search(){
+
+const s=document.getElementById("search").value;
+
+fetch("http://localhost:5000/api/users")
+
+.then(res=>res.json())
+
+.then(data=>{
+
+const filtered=data.filter(u=>u.company && u.company.toLowerCase().includes(s.toLowerCase()));
+
+display(filtered);
+
+});
+
+}
+
+</script>
+
+</body>
+</html>
